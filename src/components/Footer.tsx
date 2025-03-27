@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Phone, Mail, Facebook, Instagram, Twitter } from 'lucide-react';
@@ -22,43 +21,43 @@ const Footer: React.FC = () => {
               Connecting people with nature through sustainable hiking experiences that promote conservation and community.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-nature-600 transition-colors">
+              <a href="https://www.facebook.com/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-nature-600 transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-nature-600 transition-colors">
+              <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-nature-600 transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-400 hover:text-nature-600 transition-colors">
+              <a href="https://x.com/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-nature-600 transition-colors">
                 <Twitter className="h-5 w-5" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className="text-center">
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              <li>
+              <li className="flex justify-center">
                 <Link to="/" className="text-gray-600 hover:text-nature-600 transition-colors">
                   Home
                 </Link>
               </li>
-              <li>
+              <li className="flex justify-center">
                 <Link to="/hikes" className="text-gray-600 hover:text-nature-600 transition-colors">
                   Upcoming Hikes
                 </Link>
               </li>
-              <li>
+              <li className="flex justify-center">
                 <Link to="/about" className="text-gray-600 hover:text-nature-600 transition-colors">
                   About Us
                 </Link>
               </li>
-              <li>
+              <li className="flex justify-center">
                 <Link to="/donate" className="text-gray-600 hover:text-nature-600 transition-colors">
                   Donate
                 </Link>
               </li>
-              <li>
+              <li className="flex justify-center">
                 <Link to="/join-us" className="text-gray-600 hover:text-nature-600 transition-colors">
                   Join Us
                 </Link>
