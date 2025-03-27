@@ -14,6 +14,11 @@ const Login: React.FC = () => {
   const location = useLocation();
   const { toast } = useToast();
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Get the page the user was trying to access
   const from = location.state?.from?.pathname || '/';
 
