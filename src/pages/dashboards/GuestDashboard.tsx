@@ -144,7 +144,7 @@ const GuestDashboard: React.FC = () => {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
               <h1 className="text-3xl font-serif font-bold">Your Dashboard</h1>
-              <p className="text-gray-600 mt-1">Welcome back, {user?.email?.split('@')[0] || 'Guest'}</p>
+              <p className="text-gray-600 mt-1">Welcome back, {user?.name || 'Guest'}</p>
             </div>
             <div className="mt-4 md:mt-0 flex gap-3">
               <Button 
@@ -174,7 +174,7 @@ const GuestDashboard: React.FC = () => {
                     <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                       <User className="h-5 w-5 text-nature-500" />
                       <div>
-                        <p className="font-medium">{user?.email?.split('@')[0]}</p>
+                        <p className="font-medium">{user?.name || 'Guest'}</p>
                         <p className="text-sm text-gray-500">{user?.email}</p>
                         <p className="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full inline-block mt-1">
                           Nature Explorer
