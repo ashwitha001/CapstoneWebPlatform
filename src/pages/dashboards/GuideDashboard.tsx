@@ -437,7 +437,7 @@ const GuideDashboard: React.FC = () => {
       // Fetch notifications
       const notificationsQuery = query(
         collection(db, 'notifications'),
-        where('guideId', '==', user.uid),
+        where('userId', '==', user.uid),
         orderBy('createdAt', 'desc')
       );
       
