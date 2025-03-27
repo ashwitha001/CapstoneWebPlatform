@@ -96,7 +96,11 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
+          <Link 
+            to="/" 
+            className="flex items-center gap-3"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          >
             <div className="w-10 h-10 rounded-full bg-nature-500 flex items-center justify-center text-white font-serif font-bold text-lg">
               NH
             </div>
@@ -112,6 +116,7 @@ const Navbar: React.FC = () => {
               className={({ isActive }) =>
                 isActive ? 'nav-link active font-medium text-nature-800 px-3 py-2 rounded-md hover:bg-gray-100' : 'nav-link font-medium text-nature-700 px-3 py-2 rounded-md hover:bg-gray-100'
               }
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Home
             </NavLink>
@@ -120,6 +125,7 @@ const Navbar: React.FC = () => {
               className={({ isActive }) =>
                 isActive ? 'nav-link active font-medium text-nature-800 px-3 py-2 rounded-md hover:bg-gray-100' : 'nav-link font-medium text-nature-700 px-3 py-2 rounded-md hover:bg-gray-100'
               }
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Hikes
             </NavLink>
@@ -158,6 +164,7 @@ const Navbar: React.FC = () => {
               className={({ isActive }) =>
                 isActive ? 'nav-link active font-medium text-nature-800 px-3 py-2 rounded-md hover:bg-gray-100' : 'nav-link font-medium text-nature-700 px-3 py-2 rounded-md hover:bg-gray-100'
               }
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               Donate
             </NavLink>
@@ -261,14 +268,20 @@ const Navbar: React.FC = () => {
               <NavLink
                 to="/"
                 className="px-4 py-2 hover:bg-nature-50 rounded-md transition-colors font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               >
                 Home
               </NavLink>
               <NavLink
                 to="/hikes"
                 className="px-4 py-2 hover:bg-nature-50 rounded-md transition-colors font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               >
                 Hikes
               </NavLink>
@@ -315,7 +328,10 @@ const Navbar: React.FC = () => {
               <NavLink
                 to="/donate"
                 className="px-4 py-2 hover:bg-nature-50 rounded-md transition-colors font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
               >
                 Donate
               </NavLink>
