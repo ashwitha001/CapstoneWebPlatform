@@ -1,20 +1,22 @@
-
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 
 const About: React.FC = () => {
+  const location = useLocation();
+
   useEffect(() => {
-    window.scrollTo(0, 0);
-    
     // Handle navigation to specific sections based on hash
-    const hash = window.location.hash;
+    const hash = location.hash;
     if (hash) {
       const element = document.getElementById(hash.substring(1));
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
+    } else {
+      window.scrollTo(0, 0);
     }
-  }, []);
+  }, [location.hash]); // Re-run when hash changes
 
   return (
     <Layout>
@@ -23,7 +25,7 @@ const About: React.FC = () => {
           <h1 className="text-4xl md:text-5xl font-serif font-bold mb-8">About Our Organization</h1>
 
           {/* Foundation Section */}
-          <section id="foundation" className="mb-16 scroll-mt-24">
+          <section id="foundation" className="mb-16 scroll-mt-96">
             <h2 className="text-3xl font-serif font-semibold mb-4">Our Story</h2>
             <p className="text-lg text-gray-600 mb-6">
               This is where you can share your organization's history and mission. When did you start?
@@ -36,7 +38,7 @@ const About: React.FC = () => {
           </section>
 
           {/* Guides Section */}
-          <section id="guides" className="mb-16 scroll-mt-24">
+          <section id="guides" className="mb-16 scroll-mt-36">
             <h2 className="text-3xl font-serif font-semibold mb-4">Our Guides</h2>
             <p className="text-lg text-gray-600 mb-8">
               Introduce your team of guides here. Share their qualifications, experience, and passion
@@ -67,7 +69,7 @@ const About: React.FC = () => {
           </section>
 
           {/* FAQ Section */}
-          <section id="faq" className="scroll-mt-24">
+          <section id="faq" className="scroll-mt-36">
             <h2 className="text-3xl font-serif font-semibold mb-6">Common Questions</h2>
 
             <div className="space-y-6 max-w-3xl">
