@@ -96,7 +96,7 @@ const HikeCard: React.FC<HikeProps> = ({
         </div>
       </div>
       <Link 
-        to={`/hikes/${id}/book`}
+        to={`/hikes/${id}`}
         className="block w-full py-3 px-6 text-center bg-nature-500 hover:bg-nature-600 text-white transition-colors duration-200"
       >
         Book Now
