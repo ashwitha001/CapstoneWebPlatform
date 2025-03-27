@@ -63,16 +63,6 @@ const Login: React.FC = () => {
               <div className="text-center mb-8">
                 <h1 className="text-3xl font-serif font-bold">Welcome Back</h1>
                 <p className="text-gray-600 mt-2">Log in to your Nature Hikes account</p>
-                
-                {/* Demo account info */}
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg text-sm text-left">
-                  <p className="font-medium mb-1">Demo Accounts:</p>
-                  <ul className="space-y-1">
-                    <li>Guest: guest@example.com / password</li>
-                    <li>Guide: guide@example.com / password</li>
-                    <li>Admin: admin@example.com / password</li>
-                  </ul>
-                </div>
               </div>
 
               {error && (
