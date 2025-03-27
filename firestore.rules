@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    function isGuide() {
+      return isAuthenticated() && getUserData().role == 'guide';
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && getUserData().role == 'admin';
+    }
+
+    function isGuest() {
+      return isAuthenticated() && getUserData().role == 'guest';
+    }
+
+    // Hikes collection
+    match /hikes/{hikeId} {
+      allow read: if true;  // Allow public read access
+      // Allow admin full write access
+      allow write: if isAdmin();
+      // Allow guides to read their assigned hikes
+      allow read: if isGuide() && 
+        resource.data.assignedGuide == request.auth.uid;
+      // Allow guests to update only currentParticipants field
+      allow update: if isGuest() 
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['currentParticipants']);
+    }
+    
+    // Bookings collection
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||  // User who made the booking
+        (isGuide() && exists(/databases/$(database)/documents/hikes/$(resource.data.hikeId)) && 
+         get(/databases/$(database)/documents/hikes/$(resource.data.hikeId)).data.assignedGuide == request.auth.uid) ||  // Guide assigned to the hike
+        isAdmin()  // Admin can read all bookings
+      );
+      // Allow guests to create bookings
+      allow create: if isAuthenticated() && (
+        isGuest() && request.resource.data.userId == request.auth.uid
+      );
+      // Allow guests to update or delete their own bookings
+      allow update, delete: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+    
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        (isGuide() && resource.data.guideId == request.auth.uid)
+      );
+      allow write: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isAdmin()
+      );
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        isAdmin()
+      );
+      allow write: if isAuthenticated() && request.auth.uid == userId;
+    }
+  }
+} 
