@@ -12,6 +12,44 @@ A modern web application for managing guided hiking experiences. Built with Reac
 - Secure payment processing
 - Waiver signing system
 
+## Modifiable Sections
+
+The frontend is organized in a modular way, making it easy to modify different sections of the website. Here's where to find the main modifiable components:
+
+### Pages (`src/pages/`)
+- `About.tsx`: Main about page content and sections
+- `Hikes.tsx`: Hikes listing page and filtering
+- `HikeDetail.tsx`: Individual hike details and information
+- `BookHike.tsx`: Hike booking form and process
+- `Login.tsx`: Login page and authentication
+- `Register.tsx`: User registration form
+- `GuideRegistration.tsx`: Guide application form
+- `Donate.tsx`: Donation page content
+- `JoinUs.tsx`: Join us/volunteer page content
+
+### Components (`src/components/`)
+- `Navbar.tsx`: Main navigation bar and menu
+- `Footer.tsx`: Footer content and links
+- `Hero.tsx`: Landing page hero section
+- `Mission.tsx`: Mission statement section
+- `GetInvolved.tsx`: Get involved/volunteer section
+- `AddHikeModal.tsx`: Form for adding new hikes
+- `NotificationBell.tsx`: Notification system UI
+- `ProtectedRoute.tsx`: Route protection logic
+
+### UI Components (`src/components/ui/`)
+Contains reusable UI components that can be customized:
+- Buttons
+- Forms
+- Cards
+- Modals
+- Navigation elements
+
+### Styling
+- `src/index.css`: Global styles
+- `src/App.css`: App-specific styles
+- `tailwind.config.ts`: Tailwind CSS configuration
+
 ## Tech Stack
 
 - React 18
