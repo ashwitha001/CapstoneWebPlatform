@@ -266,26 +266,59 @@ const BookHike: React.FC = () => {
     }
   };
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (currentStep === BookingStep.SelectParticipants) {
       if (!selectedDate || !selectedTime) {
-        alert('Please select a date and time');
+        toast.error('Please select a date and time');
         return;
       }
       form.setValue('selectedDate', selectedDate);
       form.setValue('selectedTime', selectedTime);
+      setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+      return;
     }
     
     if (currentStep === BookingStep.EnterInformation) {
-      const bookerInfoValid = form.trigger(['bookerInfo', 'participants']);
-      if (!bookerInfoValid) return;
+      // Validate booker info fields
+      const bookerInfoValid = await form.trigger('bookerInfo');
+      const termsValid = await form.trigger('agreeToTerms');
+      
+      // For additional participants, validate their fields if they exist
+      let participantsValid = true;
+      const participantsData = form.getValues('participants');
+      
+      // Skip validation for the first participant (primary contact)
+      if (participantsData.length > 1) {
+        for (let i = 1; i < participantsData.length; i++) {
+          const isValid = await form.trigger(`participants.${i}`);
+          if (!isValid) {
+            participantsValid = false;
+            break;
+          }
+        }
+      }
+      
+      if (!bookerInfoValid || !termsValid || !participantsValid) {
+        toast.error('Please fill in all required fields');
+        return;
+      }
       
       // Set the primary participant's name from the booker info
       const updatedParticipants = [...participants];
+      const bookerInfo = form.getValues('bookerInfo');
       if (updatedParticipants.length > 0) {
-        updatedParticipants[0].fullName = form.getValues('bookerInfo.fullName');
+        updatedParticipants[0] = {
+          ...updatedParticipants[0],
+          fullName: bookerInfo.fullName,
+          birthdate: bookerInfo.birthdate
+        };
         setParticipants(updatedParticipants);
       }
+      
+      setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+      return;
     }
     
     if (currentStep === BookingStep.Payment) {
@@ -293,8 +326,11 @@ const BookHike: React.FC = () => {
       return;
     }
     
-    setCurrentStep(prev => prev + 1);
-    window.scrollTo(0, 0);
+    if (currentStep === BookingStep.Waivers) {
+      setCurrentStep(prev => prev + 1);
+      window.scrollTo(0, 0);
+      return;
+    }
   };
 
   const handlePreviousStep = () => {
@@ -316,22 +352,25 @@ const BookHike: React.FC = () => {
       const newBookingId = bookingRef.id;
       setBookingId(newBookingId);
 
-      // Create the booking document
+      // Get booker info
+      const bookerInfo = form.getValues('bookerInfo');
+
+      // Create the booking document with all required fields
       const bookingData = {
         id: newBookingId,
         hikeId: hike.id,
         userId: user.uid,
-        userEmail: user.email,
+        userEmail: user.email || '',
         title: hike.title,
         date: format(selectedDate, 'yyyy-MM-dd'),
         time: selectedTime,
         duration: hike.duration,
         location: hike.location,
         participants: participants.map(p => ({
-          fullName: p.fullName || (p === participants[0] ? form.getValues('bookerInfo.fullName') : ''),
-          birthdate: p.birthdate || (p === participants[0] ? form.getValues('bookerInfo.birthdate') : ''),
-          waiverSigned: p.waiverSigned,
-          signatureData: p.signatureData
+          fullName: p.fullName || (p === participants[0] ? bookerInfo.fullName : ''),
+          birthdate: p.birthdate || (p === participants[0] ? bookerInfo.birthdate : ''),
+          waiverSigned: false,
+          signatureData: null
         })),
         numberOfParticipants: participants.length,
         price: totalPrice,
@@ -339,28 +378,37 @@ const BookHike: React.FC = () => {
         totalAmount: totalWithTax,
         status: 'upcoming',
         createdAt: new Date().toISOString(),
-        waiverStatus: allWaiversSigned ? 'completed' : 'pending',
+        waiverStatus: 'pending',
         bookerInfo: {
-          ...form.getValues('bookerInfo'),
+          fullName: bookerInfo.fullName,
+          email: bookerInfo.email,
+          phone: bookerInfo.phone,
+          address: bookerInfo.address,
+          birthdate: bookerInfo.birthdate
         }
       };
 
-      // Save the booking to Firestore
-      await setDoc(bookingRef, bookingData);
-
-      // Update the hike's participant count
+      // First update the hike's participant count
       const hikeRef = doc(db, 'hikes', hike.id);
       await updateDoc(hikeRef, {
         currentParticipants: increment(participants.length)
       });
 
+      // Validate booking data before saving
+      if (!bookingData.bookerInfo.fullName || !bookingData.bookerInfo.email) {
+        throw new Error('Missing required booking information');
+      }
+
+      // Then save the booking
+      await setDoc(bookingRef, bookingData);
+
       // Show success message
       toast.success("Booking confirmed successfully!");
       setBookingComplete(true);
       setCurrentStep(BookingStep.Confirmation);
-    } catch (error) {
+    } catch (error: Error | unknown) {
       console.error('Error processing booking:', error);
-      toast.error("Failed to process booking. Please try again.");
+      toast.error(error instanceof Error ? error.message : "Failed to process booking. Please try again.");
     } finally {
       setIsProcessingPayment(false);
     }
@@ -468,6 +516,9 @@ const BookHike: React.FC = () => {
   };
 
   const skipWaivers = () => {
+    toast.info('You can complete the waivers later from your dashboard', {
+      description: 'All waivers must be completed before the hike begins'
+    });
     setCurrentStep(BookingStep.Payment);
   };
 
@@ -898,7 +949,18 @@ const BookHike: React.FC = () => {
               
               {currentStep === BookingStep.Payment && (
                 <div>
-                  <h2 className="text-xl font-serif font-semibold mb-6">Payment</h2>
+                  <h2 className="text-xl font-serif font-semibold mb-4">Payment Details</h2>
+                  {!allWaiversSigned && (
+                    <div className="bg-amber-50 p-4 rounded-lg mb-6">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="h-5 w-5 text-amber-500 mt-0.5" />
+                        <div>
+                          <h3 className="text-amber-800 font-medium">Waivers Pending</h3>
+                          <p className="text-amber-700 text-sm">You can complete the waivers later from your dashboard, but they must be signed before the hike begins.</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="bg-gray-50 p-4 rounded-lg mb-8">
                     <h3 className="font-medium mb-3">Booking Summary</h3>

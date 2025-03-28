@@ -291,7 +291,11 @@ const GuestDashboard: React.FC = () => {
                                     </Button>
                                     
                                     {hike.waiverStatus === 'pending' && (
-                                      <Button variant="default" className="bg-nature-500 hover:bg-nature-600">
+                                      <Button
+                                        variant="default"
+                                        className="bg-nature-500 hover:bg-nature-600"
+                                        onClick={() => navigate(`/waivers/${hike.id}`)}
+                                      >
                                         Complete Waiver
                                       </Button>
                                     )}

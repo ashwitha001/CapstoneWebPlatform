@@ -167,7 +167,7 @@ const HikeDetail: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <Link to={`/hikes/${hike.id}/book`}>
+                  <Link to={`/book/${hike.id}`}>
                     <Button className="w-full bg-nature-500 hover:bg-nature-600 text-white">
                       Book Now
                     </Button>
@@ -196,7 +196,7 @@ const HikeDetail: React.FC = () => {
             </div>
             
             <div className="mt-12 text-center">
-              <Link to={`/hikes/${hike.id}/book`}>
+              <Link to={`/book/${hike.id}`}>
                 <Button size="lg" className="bg-nature-500 hover:bg-nature-600 text-white">
                   Book This Hike
                 </Button>

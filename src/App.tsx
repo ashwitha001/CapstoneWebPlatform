@@ -38,58 +38,60 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/hikes" element={<Hikes />} />
             <Route path="/hikes/:hikeId" element={<HikeDetail />} />
-            <Route path="/hikes/:hikeId/book" element={
-              <ProtectedRoute requiredRole="guest" blockRole={["guide", "admin"]}>
-                <BookHike />
-              </ProtectedRoute>
-            } />
             <Route path="/about" element={<About />} />
             <Route path="/donate" element={<Donate />} />
             <Route path="/join-us" element={<JoinUs />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/guide-registration/:token" element={<GuideRegistration />} />
-            <Route path="/waiver/:hikeId" element={
-              <ProtectedRoute requiredRole="guest">
-                <WaiverSigning />
-              </ProtectedRoute>
-            } />
             
-            {/* Protected dashboard routes */}
+            {/* Guest Protected Routes */}
             <Route path="/dashboard" element={
-              <ProtectedRoute requiredRole="guest">
+              <ProtectedRoute requiredRole="guest" blockRole={["guide", "admin"]}>
                 <GuestDashboard />
               </ProtectedRoute>
             } />
+            <Route path="/book/:hikeId" element={
+              <ProtectedRoute requiredRole="guest" blockRole={["guide", "admin"]}>
+                <BookHike />
+              </ProtectedRoute>
+            } />
+            <Route path="/waivers/:bookingId" element={
+              <ProtectedRoute requiredRole="guest" blockRole={["guide", "admin"]}>
+                <WaiverSigning />
+              </ProtectedRoute>
+            } />
+
+            {/* Guide Protected Routes */}
             <Route path="/guide-dashboard" element={
-              <ProtectedRoute requiredRole="guide">
+              <ProtectedRoute requiredRole="guide" blockRole={["guest", "admin"]}>
                 <GuideDashboard />
               </ProtectedRoute>
             } />
+
+            {/* Admin Protected Routes */}
             <Route path="/admin-dashboard" element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute requiredRole="admin" blockRole={["guest", "guide"]}>
                 <AdminDashboard />
               </ProtectedRoute>
             } />
-            
-            {/* Admin section routes */}
             <Route path="/admin/hikes" element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute requiredRole="admin" blockRole={["guest", "guide"]}>
                 <ManageHikes />
               </ProtectedRoute>
             } />
             <Route path="/admin/guides" element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute requiredRole="admin" blockRole={["guest", "guide"]}>
                 <ManageGuides />
               </ProtectedRoute>
             } />
             <Route path="/admin/schedules" element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute requiredRole="admin" blockRole={["guest", "guide"]}>
                 <ManageSchedules />
               </ProtectedRoute>
             } />
             <Route path="/admin/reports" element={
-              <ProtectedRoute requiredRole="admin">
+              <ProtectedRoute requiredRole="admin" blockRole={["guest", "guide"]}>
                 <Reports />
               </ProtectedRoute>
             } />
