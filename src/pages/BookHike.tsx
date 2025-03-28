@@ -210,6 +210,22 @@ const BookHike: React.FC = () => {
   useEffect(() => {
     if (hike) {
       const numParticipants = form.watch('numberOfParticipants') || 1;
+      const availableSpots = hike.maxParticipants - hike.currentParticipants;
+      
+      // If no spots available, show message and redirect
+      if (availableSpots <= 0) {
+        toast.error("No spots available", {
+          description: "This hike is fully booked. Please try our other hikes!",
+        });
+        navigate('/hikes');
+        return;
+      }
+
+      // Limit number of participants to available spots
+      if (numParticipants > availableSpots) {
+        form.setValue('numberOfParticipants', availableSpots);
+      }
+
       const basePrice = hike.price * numParticipants;
       const calculatedTax = basePrice * 0.13; // 13% tax
       setTotalPrice(basePrice);
@@ -229,7 +245,7 @@ const BookHike: React.FC = () => {
         birthdate: p.birthdate
       })));
     }
-  }, [form.watch('numberOfParticipants'), hike]);
+  }, [form.watch('numberOfParticipants'), hike, navigate]);
 
   const updateParticipant = (index: number, data: Partial<{fullName: string; birthdate: string; waiverSigned: boolean; signatureData?: string}>) => {
     setParticipants(prev => {
@@ -551,8 +567,12 @@ const BookHike: React.FC = () => {
                         <Button
                           type="button"
                           variant="outline"
-                          onClick={() => form.setValue('numberOfParticipants', Math.min(hike.maxParticipants, (form.watch('numberOfParticipants') || 1) + 1))}
-                          disabled={(form.watch('numberOfParticipants') || 1) >= hike.maxParticipants}
+                          onClick={() => {
+                            const currentValue = form.watch('numberOfParticipants') || 1;
+                            const availableSpots = hike.maxParticipants - hike.currentParticipants;
+                            form.setValue('numberOfParticipants', Math.min(availableSpots, currentValue + 1));
+                          }}
+                          disabled={(form.watch('numberOfParticipants') || 1) >= (hike.maxParticipants - hike.currentParticipants)}
                         >
                           +
                         </Button>
