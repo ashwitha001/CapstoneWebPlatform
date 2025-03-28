@@ -355,6 +355,9 @@ const BookHike: React.FC = () => {
       // Get booker info
       const bookerInfo = form.getValues('bookerInfo');
 
+      // Check if all waivers are signed
+      const allWaiversSigned = participants.every(p => p.waiverSigned);
+
       // Create the booking document with all required fields
       const bookingData = {
         id: newBookingId,
@@ -369,8 +372,8 @@ const BookHike: React.FC = () => {
         participants: participants.map(p => ({
           fullName: p.fullName || (p === participants[0] ? bookerInfo.fullName : ''),
           birthdate: p.birthdate || (p === participants[0] ? bookerInfo.birthdate : ''),
-          waiverSigned: false,
-          signatureData: null
+          waiverSigned: p.waiverSigned,
+          signatureData: p.signatureData
         })),
         numberOfParticipants: participants.length,
         price: totalPrice,
@@ -378,7 +381,7 @@ const BookHike: React.FC = () => {
         totalAmount: totalWithTax,
         status: 'upcoming',
         createdAt: new Date().toISOString(),
-        waiverStatus: 'pending',
+        waiverStatus: allWaiversSigned ? 'completed' : 'pending',
         bookerInfo: {
           fullName: bookerInfo.fullName,
           email: bookerInfo.email,
